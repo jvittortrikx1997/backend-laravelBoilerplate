@@ -1,5 +1,5 @@
 <?php
-
+//command MakeHexagonalModel
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
