@@ -2,9 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HelloWorldController;
 
-route::controller(HelloWorldController::class)->group(function(){
-    route::get('/', 'get');
+route::middleware(['auth:api'])->group(function (): void {
+    require_once __DIR__ . '/user.php';
+    require_once __DIR__ . '/auth.php';
 });
-
