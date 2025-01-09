@@ -2,9 +2,9 @@
 
 namespace App\Domain\Services;
 
-use App\Domain\Repositories\EmailServiceInterface;
 use App\Domain\Repositories\UserCodeRepositoryInterface;
 use App\Domain\Repositories\UserRepositoryInterface;
+use App\Application\UseCases\SendTwoFactorCode;
 use DomainException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Http\JsonResponse;
@@ -16,14 +16,13 @@ class AuthLoginService
     public function __construct(
         protected readonly UserRepositoryInterface $userRepository,
         protected readonly UserCodeRepositoryInterface $userCodeRepository,
-        protected readonly EmailServiceInterface $emailServiceInterface
+        protected readonly SendTwoFactorCode $sendTwoFactorCode
     )
     {
     }
 
     public function login(array $credentials): JsonResponse
     {
-
         $attempt = $this->buildAttemptArray($credentials);
 
         $token = Auth::attempt($attempt);
@@ -47,12 +46,22 @@ class AuthLoginService
         if ($credentials['verify_code'] === null) {
             $code = $this->generateVerificationCode();
             $this->userCodeRepository->updateOrCreateCode($user->USUUID, $code);
-            $this->emailServiceInterface->sendTwoFactorCode($user->USUNOME, $user->USUEMAIL, $code);
+            $this->sendTwoFactorCode->execute($user->USUNOME, $user->USUEMAIL, $code);
+
+            return response()->json([
+                'message' => 'Código de verificação enviado para o email',
+                'data' => [],
+            ]);
         }
 
+        $this->userCodeRepository->getUserCode($user->USUUID, $credentials['verify_code']);
+        $this->userCodeRepository->deleteUserCode($user->USUUID, $credentials['verify_code']);
+
         return response()->json([
-            'message' => 'Código de verificação enviado para o email',
-            'data' => [],
+            'message' => 'Usuário loga com sucesso!',
+            'data' => [
+                'access_token' => $token,
+            ],
         ]);
     }
 
@@ -67,4 +76,5 @@ class AuthLoginService
     {
         return rand(100000, 999999);
     }
+
 }

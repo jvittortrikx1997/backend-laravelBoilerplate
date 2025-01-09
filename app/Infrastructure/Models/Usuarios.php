@@ -2,7 +2,6 @@
 
 namespace App\Infrastructure\Models;
 
-//use App\Extenders\Authenticable;
 use App\Traits\Uuids;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

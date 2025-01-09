@@ -19,4 +19,25 @@ class EloquentUserCodeRepository implements UserCodeRepositoryInterface
             throw new DomainException('Erro ao criar ou atualizar o código de verificação', 500);
         }
     }
+
+    public function getUserCode(string $userId, string $code)
+    {
+        $userCode = UsuarioCodigo::where('USUUID', $userId)
+            ->where('USUCODCODIGO', $code)
+            ->first();
+
+        if (!$userCode) {
+            throw new DomainException('Código de verificação inválido', 404);
+        }
+
+        return $userCode;
+    }
+
+    public function deleteUserCode(string $userId, string $code)
+    {
+        $userCode = UsuarioCodigo::query()
+        ->where('USUUID', $userId)
+        ->where('USUCODCODIGO', $code)
+        ->delete();
+    }
 }

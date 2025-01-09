@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Doman\Services;
+namespace App\Domain\Services;
 
 use DomainException;
 use Illuminate\Support\Facades\Http;
