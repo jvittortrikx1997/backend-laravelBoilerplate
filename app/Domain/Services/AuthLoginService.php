@@ -9,7 +9,6 @@ use DomainException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
-use RuntimeException;
 
 class AuthLoginService
 {
